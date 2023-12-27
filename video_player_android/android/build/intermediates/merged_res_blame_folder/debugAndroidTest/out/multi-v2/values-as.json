@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "io.flutter.plugins.videoplayer.test-mergeDebugAndroidTestResources-6:/values-as/values-as.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\basem\\.gradle\\caches\\transforms-3\\6ace7c7b2f1cdfe3e4b6899c7f11a4c3\\transformed\\core-1.7.0\\res\\values-as\\values-as.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    }
+                }
+            ]
+        }
+    ]
+}

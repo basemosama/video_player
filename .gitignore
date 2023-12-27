@@ -1,0 +1,8 @@
+# Project exclude paths
+/video_player/.dart_tool/
+/video_player/example/.dart_tool/
+/video_player/example/build/
+/video_player_android/.dart_tool/
+/video_player_android/example/.dart_tool/
+/video_player_android/example/build/
+/video_player_platform_interface/.dart_tool/

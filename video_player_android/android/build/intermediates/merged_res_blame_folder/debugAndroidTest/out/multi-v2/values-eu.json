@@ -1,0 +1,36 @@
+{
+    "logs": [
+        {
+            "outputFile": "io.flutter.plugins.videoplayer.test-mergeDebugAndroidTestResources-6:/values-eu/values-eu.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\basem\\.gradle\\caches\\transforms-3\\6ace7c7b2f1cdfe3e4b6899c7f11a4c3\\transformed\\core-1.7.0\\res\\values-eu\\values-eu.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "11",
+                        "startColumns": "4",
+                        "startOffsets": "753",
+                        "endColumns": "100",
+                        "endOffsets": "849"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\basem\\.gradle\\caches\\transforms-3\\62d1b57a60594814bedd16fd7558fece\\transformed\\exoplayer-core-2.18.7\\res\\values-eu\\values-eu.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10",
+                        "startColumns": "4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,124,187,253,325,402,476,587,685",
+                        "endColumns": "68,62,65,71,76,73,110,97,67",
+                        "endOffsets": "119,182,248,320,397,471,582,680,748"
+                    }
+                }
+            ]
+        }
+    ]
+}

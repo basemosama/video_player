@@ -1,0 +1,39 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="io.flutter.plugins.videoplayer.test" >
+4
+5    <uses-sdk
+5-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:5:5-74
+6        android:minSdkVersion="16"
+6-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:5:15-41
+7        android:targetSdkVersion="16" />
+7-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:5:42-71
+8
+9    <instrumentation
+9-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:11:5-15:85
+10        android:name="androidx.test.runner.AndroidJUnitRunner"
+10-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:11:22-76
+11        android:functionalTest="false"
+11-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:14:22-52
+12        android:handleProfiling="false"
+12-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:13:22-53
+13        android:label="Tests for io.flutter.plugins.videoplayer.test"
+13-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:15:22-83
+14        android:targetPackage="io.flutter.plugins.videoplayer.test" />
+14-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:12:22-81
+15
+16    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+16-->[com.google.android.exoplayer:exoplayer-core:2.18.7] C:\Users\basem\.gradle\caches\transforms-3\62d1b57a60594814bedd16fd7558fece\transformed\exoplayer-core-2.18.7\AndroidManifest.xml:24:5-79
+16-->[com.google.android.exoplayer:exoplayer-core:2.18.7] C:\Users\basem\.gradle\caches\transforms-3\62d1b57a60594814bedd16fd7558fece\transformed\exoplayer-core-2.18.7\AndroidManifest.xml:24:22-76
+17
+18    <application
+18-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:7:5-9:19
+19        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+19-->[androidx.core:core:1.7.0] C:\Users\basem\.gradle\caches\transforms-3\6ace7c7b2f1cdfe3e4b6899c7f11a4c3\transformed\core-1.7.0\AndroidManifest.xml:24:18-86
+20        android:debuggable="true" >
+21        <uses-library android:name="android.test.runner" />
+21-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:8:9-60
+21-->E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10081316468323224257.xml:8:23-57
+22    </application>
+23
+24</manifest>

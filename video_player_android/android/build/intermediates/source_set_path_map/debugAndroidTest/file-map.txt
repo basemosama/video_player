@@ -1,0 +1,12 @@
+io.flutter.plugins.videoplayer.test-exoplayer-core-2.18.7-0 C:\Users\basem\.gradle\caches\transforms-3\62d1b57a60594814bedd16fd7558fece\transformed\exoplayer-core-2.18.7\res
+io.flutter.plugins.videoplayer.test-core-1.7.0-1 C:\Users\basem\.gradle\caches\transforms-3\6ace7c7b2f1cdfe3e4b6899c7f11a4c3\transformed\core-1.7.0\res
+io.flutter.plugins.videoplayer.test-lifecycle-runtime-2.3.1-2 C:\Users\basem\.gradle\caches\transforms-3\e20fcfb31bede393221a50840fd8065e\transformed\lifecycle-runtime-2.3.1\res
+io.flutter.plugins.videoplayer.test-annotation-experimental-1.1.0-3 C:\Users\basem\.gradle\caches\transforms-3\e3f4007c6754cc452ef16f26a0cd35e6\transformed\annotation-experimental-1.1.0\res
+io.flutter.plugins.videoplayer.test-androidTest-4 E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\generated\res\resValues\androidTest\debug
+io.flutter.plugins.videoplayer.test-androidTest-5 E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\generated\res\rs\androidTest\debug
+io.flutter.plugins.videoplayer.test-mergeDebugAndroidTestResources-6 E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+io.flutter.plugins.videoplayer.test-mergeDebugAndroidTestResources-7 E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+io.flutter.plugins.videoplayer.test-merged_res-8 E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\merged_res\debugAndroidTest
+io.flutter.plugins.videoplayer.test-packaged_res-9 E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\build\intermediates\packaged_res\debug
+io.flutter.plugins.videoplayer.test-androidTest-10 E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\src\androidTest\res
+io.flutter.plugins.videoplayer.test-androidTestDebug-11 E:\Sourcaya\Apps\packages\packages\video_player\video_player_android\android\src\androidTestDebug\res
