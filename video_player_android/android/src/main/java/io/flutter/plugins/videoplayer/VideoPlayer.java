@@ -121,8 +121,6 @@ final class VideoPlayer {
         renderersFactory.setEnableDecoderFallback(true);
 
 
-
-
         ExoPlayer exoPlayer = new ExoPlayer.Builder(context)
                 .setUsePlatformDiagnostics(true)
                 .setRenderersFactory(renderersFactory)
@@ -205,7 +203,7 @@ final class VideoPlayer {
                     break;
             }
         }
-        Log.d("video_player:", "type :" +type);
+        Log.d("video_player:", "type :" + type);
 
         switch (type) {
             case C.CONTENT_TYPE_SS:
@@ -371,6 +369,14 @@ final class VideoPlayer {
         }
     }
 
+
+    public int getActiveVideoTrack(){
+
+
+    }
+
+
+
     public ArrayList<Object> getTrackSelections() {
         System.err.println("xxx : tracks X4 ...");
         ArrayList<Object> trackSelections = new ArrayList<>();
@@ -395,7 +401,7 @@ final class VideoPlayer {
                         autoTrackSelection.put("trackType", trackType);
                         autoTrackSelection.put(
                                 "isSelected",
-                                /*todo !trackSelectorParameters.hasSelectionOverride(rendererIndex, trackGroups)*/false);
+                                 !trackSelectorParameters.hasSelectionOverride(rendererIndex, trackGroups));
                         autoTrackSelection.put("trackId", Integer.toString(rendererIndex));
                         trackSelections.add(autoTrackSelection);
                     }
@@ -429,15 +435,15 @@ final class VideoPlayer {
                                 trackSelection.put("isUnknown", true);
                         }
 
-            /*SelectionOverride selectionOverride =
-                trackSelectorParameters.getSelectionOverride(rendererIndex, trackGroups);*/
+           SelectionOverride selectionOverride =
+                trackSelectorParameters.getSelectionOverride(rendererIndex, trackGroups);
                         trackSelection.put("isAuto", false);
                         trackSelection.put("trackType", trackType);
                         trackSelection.put(
-                                "isSelected", false
-                    /*trackSelectorParameters.overrides != null
+                                "isSelected",
+                    trackSelectorParameters.overrides != null
                     && selectionOverride.containsTrack(trackIndex)
-                    && selectionOverride.groupIndex == groupIndex*/);
+                    && selectionOverride.groupIndex == groupIndex);
                         trackSelection.put("trackId", getTrackId(rendererIndex, groupIndex, trackIndex));
                         trackSelections.add(trackSelection);
                     }
@@ -544,6 +550,9 @@ final class VideoPlayer {
     private String getTrackId(Integer rendererIndex, Integer groupIndex, Integer trackIndex) {
         return rendererIndex.toString() + groupIndex.toString() + trackIndex.toString();
     }
+
+
+
 
     public void setTrackSelection(String trackId) {
         System.err.println("xxx : set tracks X1 ...");
