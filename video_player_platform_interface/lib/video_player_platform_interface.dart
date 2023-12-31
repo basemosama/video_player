@@ -233,6 +233,7 @@ class VideoEvent {
     this.rotationCorrection,
     this.buffered,
     this.isPlaying,
+    this.subtitle,
   });
 
   /// The type of the event.
@@ -263,6 +264,9 @@ class VideoEvent {
   /// Only used if [eventType] is [VideoEventType.isPlayingStateUpdate].
   final bool? isPlaying;
 
+  /// Current Subtitle selected by track selection
+  final List<String>? subtitle;
+
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
@@ -273,6 +277,7 @@ class VideoEvent {
             size == other.size &&
             rotationCorrection == other.rotationCorrection &&
             listEquals(buffered, other.buffered) &&
+            listEquals(subtitle, other.subtitle) &&
             isPlaying == other.isPlaying;
   }
 
@@ -284,6 +289,7 @@ class VideoEvent {
         rotationCorrection,
         buffered,
         isPlaying,
+    subtitle
       );
 }
 
@@ -313,6 +319,8 @@ enum VideoEventType {
   /// phone calls, or other app media such as music players.
   isPlayingStateUpdate,
 
+  /// Video subtitle has been received.
+  subtitle,
   /// An unknown event has been received.
   unknown,
 }

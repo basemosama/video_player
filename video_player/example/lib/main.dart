@@ -220,9 +220,13 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
         fileContents); // For vtt files, use WebVTTCaptionFile
   }
 
+  String subtitle="";
+
   @override
   void initState() {
     super.initState();
+
+
     _controller = VideoPlayerController.networkUrl(
       Uri.parse(
           'http://sample.vodobox.com/planete_interdite/planete_interdite_alternate.m3u8'),
@@ -230,8 +234,13 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
     );
 
     _controller.addListener(() {
+      final text = _controller.value.subtitle?.toString();
+      if (text != null) {
+      subtitle = text;
+      }
       setState(() {});
     });
+
     _controller.setLooping(true);
     _controller.initialize();
   }
@@ -257,7 +266,7 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
                 alignment: Alignment.bottomCenter,
                 children: <Widget>[
                   VideoPlayer(_controller),
-                  ClosedCaption(text: _controller.value.caption.text),
+                  ClosedCaption(text: subtitle),
                   _ControlsOverlay(controller: _controller),
                   VideoProgressIndicator(_controller, allowScrubbing: true),
                 ],

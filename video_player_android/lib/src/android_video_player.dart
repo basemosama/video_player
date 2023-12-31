@@ -284,6 +284,11 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
             eventType: VideoEventType.isPlayingStateUpdate,
             isPlaying: map['isPlaying'] as bool,
           );
+        case 'subtitle':
+          return VideoEvent(
+            eventType: VideoEventType.subtitle,
+            subtitle: map['subtitle'] as List<String>?,
+          );
         default:
           return VideoEvent(eventType: VideoEventType.unknown);
       }

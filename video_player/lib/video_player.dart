@@ -46,7 +46,7 @@ VideoPlayerPlatform get _videoPlayerPlatform {
 class VideoPlayerValue {
   /// Constructs a video with the given values. Only [duration] is required. The
   /// rest will initialize with default values when unset.
-  const VideoPlayerValue({
+  const VideoPlayerValue( {
     required this.duration,
     this.size = Size.zero,
     this.position = Duration.zero,
@@ -63,6 +63,7 @@ class VideoPlayerValue {
     this.rotationCorrection = 0,
     this.errorDescription,
     this.isCompleted = false,
+    this.subtitle,
   });
 
   /// Returns an instance for a video that hasn't been loaded.
@@ -140,6 +141,8 @@ class VideoPlayerValue {
   /// Indicates whether or not the video has been loaded and is ready to play.
   final bool isInitialized;
 
+
+
   /// Indicates whether or not the video is in an error state. If this is true
   /// [errorDescription] should have information about the problem.
   bool get hasError => errorDescription != null;
@@ -161,6 +164,11 @@ class VideoPlayerValue {
     return aspectRatio;
   }
 
+
+  final List<String>? subtitle;
+
+
+
   /// Returns a new instance that has the same values as this current instance,
   /// except for any overrides passed in as arguments to [copyWidth].
   VideoPlayerValue copyWith({
@@ -180,6 +188,7 @@ class VideoPlayerValue {
     int? rotationCorrection,
     bool? isCompleted,
     String? errorDescription = _defaultErrorDescription,
+    List<String>? subtitle,
   }) {
     return VideoPlayerValue(
       duration: duration ?? this.duration,
@@ -505,6 +514,10 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           break;
         case VideoEventType.unknown:
           break;
+        case VideoEventType.subtitle:
+          value = value.copyWith(subtitle: event.subtitle);
+          break;
+
       }
     }
 

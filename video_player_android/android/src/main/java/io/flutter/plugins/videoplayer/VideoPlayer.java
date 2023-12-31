@@ -40,6 +40,8 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.source.rtsp.RtspMediaSource;
 import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource;
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
+import com.google.android.exoplayer2.text.Cue;
+import com.google.android.exoplayer2.text.CueGroup;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.Parameters;
@@ -288,11 +290,10 @@ final class VideoPlayer {
                         }
                     }
 
-                    //@Override
+//                    @Override
                     @SuppressWarnings("ReferenceEquality")
                     public void onTracksChanged(
                             TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-                        //todo(aliyazdi75): use this listener to change subtitle after implementing ffmpeg.
                     }
 
 
@@ -302,6 +303,23 @@ final class VideoPlayer {
                         if (eventSink != null) {
                             eventSink.error("VideoError", "Video player had error " + error, null);
                         }
+                    }
+
+                    @Override
+                    public void onCues(@NonNull CueGroup cueGroup) {
+                        if (eventSink != null) {
+                            Map<String, Object> event = new HashMap<>();
+                            event.put("event", "subtitle");
+
+                            final List<String> cues = new ArrayList<>();
+                            for(int i=0; i<cueGroup.cues.size() ;i++){
+                                final Cue cue = cueGroup.cues.get(i);
+                                cues.add(cue.text != null ? cue.text.toString() : null);
+                            }
+                            event.put("cues", cues);
+                            eventSink.success(event);
+                        }
+
                     }
 
                     @Override
