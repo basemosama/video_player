@@ -220,7 +220,7 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
         fileContents); // For vtt files, use WebVTTCaptionFile
   }
 
-  String subtitle="";
+  String subtitle="Subtitle";
 
   @override
   void initState() {
@@ -234,9 +234,9 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
     );
 
     _controller.addListener(() {
-      final text = _controller.value.subtitle?.toString();
+      final text = _controller.value.subtitle;
       if (text != null) {
-      subtitle = text;
+      subtitle = text.toString();
       }
       setState(() {});
     });
@@ -487,7 +487,6 @@ class _GetTrackSelectionButton extends StatelessWidget {
                     .toList(),
               ),
             );
-            print('tracks selected: $selected');
             if (selected != null) {
               await controller.setTrackSelection(selected);
             }
@@ -551,7 +550,6 @@ class _TrackSelectionDialog extends StatelessWidget {
                                 if (track == null) {
                                   return;
                                 }
-                                print('tracks selected: $track');
                                   Navigator.of(context).pop(track);
                               },
                             ))
@@ -570,7 +568,6 @@ class _TrackSelectionDialog extends StatelessWidget {
                                   .where((track) => track.isSelected).firstOrNull,
                               selected: track.isSelected,
                               onChanged: (TrackSelection? track) {
-                                print('xxxt rack $track');
                                 if (track == null) {
                                   return;
                                 }

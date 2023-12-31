@@ -402,8 +402,6 @@ final class VideoPlayer {
              rendererIndex++) {
             TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
 
-            Log.d("xxx :", trackGroups.toString() + " " + rendererIndex);
-
             if (isSupportedTrackForRenderer(trackGroups, mappedTrackInfo, rendererIndex)) {
                 int trackType = mappedTrackInfo.getRendererType(rendererIndex);
                 for (int groupIndex = 0; groupIndex < trackGroups.length; groupIndex++) {
@@ -465,7 +463,6 @@ final class VideoPlayer {
 
                         final boolean isTrackSelected = isTrackSelected(trackType, groupIndex, trackIndex);
 
-                        Log.d("xxx", "isSelected" + " " + isTrackSelected + " " + trackType + " " + groupIndex + " " + trackIndex);
                         trackSelection.put(
                                 "isSelected",
                                 isTrackSelected);
@@ -487,9 +484,6 @@ final class VideoPlayer {
         final List<Tracks.Group> selectedTypeGroups = new ArrayList<>();
         for (int i = 0; i < groups.size(); i++) {
             final Tracks.Group group = groups.get(i);
-            final Format label =  group.getTrackFormat(0);
-            Log.d("xxx :" +i, "get label" + label);
-
             if (group.getType() == trackType) {
                 selectedTypeGroups.add(group);
             }
@@ -605,7 +599,6 @@ final class VideoPlayer {
 
 
     public void setTrackSelection(String trackId, int trackType) {
-        Log.d("xxx :", "set tracks X1 ..." + trackId);
 
         final String[] split = trackId.split(":");
         if (split.length != 3) {
@@ -640,18 +633,8 @@ final class VideoPlayer {
             throw new IllegalStateException("Unsupported track Index: " + trackIndex);
         }
 
-//        if(trackGroup.isTrackSelected(trackIndex)){
-//            System.err.println("xxx : track is selected " + trackIndex);
-//            return;
-//        }
 
         final Format format =  trackGroup.getTrackFormat(0);
-
-        Log.d("xxx :", "Updating track ..."
-                + " trackIndex " + trackIndex + " GroupIndex " + groupIndex
-                + "format " + format
-                + trackId + " Type " + trackType
-        );
 
 
         exoPlayer.setTrackSelectionParameters(

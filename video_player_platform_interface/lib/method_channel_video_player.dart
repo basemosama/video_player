@@ -240,6 +240,9 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
           return VideoEvent(eventType: VideoEventType.bufferingStart);
         case 'bufferingEnd':
           return VideoEvent(eventType: VideoEventType.bufferingEnd);
+        case 'subtitle':
+          List<String>? subtitle = (map['cues'] as List?)?.map((e) => e.toString()).toList();
+          return VideoEvent(eventType: VideoEventType.subtitle,subtitle:subtitle);
         default:
           return VideoEvent(eventType: VideoEventType.unknown);
       }
