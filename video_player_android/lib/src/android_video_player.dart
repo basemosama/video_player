@@ -232,10 +232,21 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
 
   @override
   Future<void> setTrackSelection(int textureId, TrackSelection trackSelection) {
+    final  type = trackSelection.trackType;
+    final trackIndex = int.tryParse(trackSelection.trackId);
+    int trackType = switch(type){
+      TrackSelectionType.audio => 1,
+      TrackSelectionType.video => 2,
+      TrackSelectionType.text => 3,
+    };
     return _api.setTrackSelection(TrackSelectionsMessage(
         trackId: trackSelection.trackId,
         textureId: textureId,
-        trackSelections: <Object?>[]));
+        trackSelections: <Object?>[],
+      trackType:trackType,
+      trackIndex:trackIndex,
+
+    ));
   }
 
   @override

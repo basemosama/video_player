@@ -188,10 +188,10 @@ packages:
     dependency: "direct dev"
     description:
       name: pigeon
-      sha256: c897b1abb2fa1d8fdb61aca34216796160ca7d9e34fef360a733e2608191acd4
+      sha256: "4d73d2649a005cc2cb0578c3c56b396a1c427879a4953fe03f45d74167042cf3"
       url: "https://pub.dev"
     source: hosted
-    version: "14.0.0"
+    version: "14.0.1"
   pub_semver:
     dependency: transitive
     description:

@@ -214,10 +214,10 @@ public class VideoPlayerPlugin implements FlutterPlugin, AndroidVideoPlayerApi {
   }
 
   public void setTrackSelection(TrackSelectionsMessage arg) {
-    System.err.println("xxx : set tracks 51 ...");
-    System.err.println(arg.getTrackId().toString());
+    System.err.println("xxx : setTrackSelection : " + arg.toList());
     VideoPlayer player = videoPlayers.get(arg.getTextureId());
-    player.setTrackSelection(arg.getTrackId());
+    player.setTrackSelection(arg.getTrackId(), arg.getTrackType());
+
   }
   public void pause(@NonNull TextureMessage arg) {
     VideoPlayer player = videoPlayers.get(arg.getTextureId());

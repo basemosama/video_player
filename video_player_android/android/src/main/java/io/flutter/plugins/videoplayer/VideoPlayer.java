@@ -54,6 +54,7 @@ import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.EventLogger;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -374,38 +375,46 @@ final class VideoPlayer {
         System.err.println("xxx : tracks X4 ...");
         ArrayList<Object> trackSelections = new ArrayList<>();
         ArrayList<Integer> autoTrackSelectionTypes = new ArrayList<>();
+
+
         MappedTrackInfo mappedTrackInfo =
                 Assertions.checkNotNull(trackSelector.getCurrentMappedTrackInfo());
         for (int rendererIndex = 0;
              rendererIndex < mappedTrackInfo.getRendererCount();
              rendererIndex++) {
             TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
+
+            Log.d("xxx :", trackGroups.toString() + " " + rendererIndex);
+
             if (isSupportedTrackForRenderer(trackGroups, mappedTrackInfo, rendererIndex)) {
                 int trackType = mappedTrackInfo.getRendererType(rendererIndex);
                 for (int groupIndex = 0; groupIndex < trackGroups.length; groupIndex++) {
                     TrackGroup group = trackGroups.get(groupIndex);
 
                     //add auto track for each track selection types
-                    if (!autoTrackSelectionTypes.contains(trackType)) {
-                        autoTrackSelectionTypes.add(trackType);
-                        HashMap<String, Object> autoTrackSelection = new HashMap<>();
-                        autoTrackSelection.put("isUnknown", false);
-                        autoTrackSelection.put("isAuto", true);
-                        autoTrackSelection.put("trackType", trackType);
-                        final boolean isSelected = trackSelectorParameters.getRendererDisabled(rendererIndex);
-                        Log.d("xxx auto", "isSelected" + " " + trackSelectorParameters.overrides);
-
-                        autoTrackSelection.put(
-                                "isSelected",
-                                isSelected);
-                        autoTrackSelection.put("trackId", Integer.toString(rendererIndex));
-                        trackSelections.add(autoTrackSelection);
-                    }
+//                    if (!autoTrackSelectionTypes.contains(trackType)) {
+//                        autoTrackSelectionTypes.add(trackType);
+//                        HashMap<String, Object> autoTrackSelection = new HashMap<>();
+//                        autoTrackSelection.put("isUnknown", false);
+//                        autoTrackSelection.put("isAuto", true);
+//                        autoTrackSelection.put("trackType", trackType);
+//                        final boolean isSelected = trackSelectorParameters.getRendererDisabled(rendererIndex);
+//
+//
+//                        Log.d("xxx auto", "isSelected" + " " + trackSelectorParameters.overrides);
+//
+//                        autoTrackSelection.put(
+//                                "isSelected",
+//                                isSelected);
+//                        autoTrackSelection.put("trackId", Integer.toString(rendererIndex));
+//                        trackSelections.add(autoTrackSelection);
+//                    }
 
                     //add tracks
                     for (int trackIndex = 0; trackIndex < group.length; trackIndex++) {
                         HashMap<String, Object> trackSelection = new HashMap<>();
                         Format trackFormat = group.getFormat(trackIndex);
+
                         int inferPrimaryTrackType = inferPrimaryTrackType(trackFormat);
                         trackSelection.put("isUnknown", false);
                         switch (inferPrimaryTrackType) {
@@ -431,19 +440,17 @@ final class VideoPlayer {
                                 trackSelection.put("isUnknown", true);
                         }
 
-                        TrackSelectionOverride selectionOverride =
-                                trackSelectorParameters.overrides.get(group);
 
                         trackSelection.put("isAuto", false);
                         trackSelection.put("trackType", trackType);
-                        final boolean isSelected = selectionOverride != null && selectionOverride.trackIndices.contains(trackIndex)
-                                && selectionOverride.mediaTrackGroup.getFormat(trackIndex).equals(trackFormat);
 
-                        Log.d("xxx selectionOverride", selectionOverride == null ? "null" : selectionOverride.mediaTrackGroup.toString() + " " + selectionOverride.trackIndices);
 
+                        final boolean isTrackSelected = isTrackSelected(trackType, groupIndex, trackIndex);
+
+                        Log.d("xxx", "isSelected" + " " + isTrackSelected + " " + trackType + " " + groupIndex + " " + trackIndex);
                         trackSelection.put(
                                 "isSelected",
-                                isSelected);
+                                isTrackSelected);
                         trackSelection.put("trackId", getTrackId(rendererIndex, groupIndex, trackIndex));
                         trackSelections.add(trackSelection);
                     }
@@ -453,6 +460,32 @@ final class VideoPlayer {
         System.err.println(trackSelections.toString());
         return trackSelections;
     }
+
+
+    boolean isTrackSelected(int trackType, int groupIndex, int trackIndex) {
+        final Tracks tracks = exoPlayer.getCurrentTracks();
+        final ImmutableList<Tracks.Group> groups = tracks.getGroups();
+
+        final List<Tracks.Group> selectedTypeGroups = new ArrayList<>();
+        for (int i = 0; i < groups.size(); i++) {
+            final Tracks.Group group = groups.get(i);
+            final Format label =  group.getTrackFormat(0);
+            Log.d("xxx :" +i, "get label" + label);
+
+            if (group.getType() == trackType) {
+                selectedTypeGroups.add(group);
+            }
+        }
+
+        if (groupIndex < 0 || groupIndex >= selectedTypeGroups.size()) {
+            return false;
+        }
+
+        final Tracks.Group group = selectedTypeGroups.get(groupIndex);
+
+        return group.isTrackSelected(trackIndex);
+    }
+
 
     private Boolean isSupportedTrackForRenderer(
             TrackGroupArray trackGroups,
@@ -547,53 +580,70 @@ final class VideoPlayer {
         return format.height;
     }
 
-    private String getTrackId(Integer rendererIndex, Integer groupIndex, Integer trackIndex) {
-        return rendererIndex.toString() + groupIndex.toString() + trackIndex.toString();
+
+    String getTrackId(Integer rendererIndex, Integer groupIndex, Integer trackIndex) {
+        return rendererIndex + ":" + groupIndex + ":" + trackIndex;
     }
 
 
-    public void setTrackSelection(String trackId) {
-        System.err.println("xxx : set tracks X1 ...");
-        System.err.println(trackId.toString());
-        if (!(trackId.length() == 1 || trackId.length() == 3)) {
-            throw new IllegalStateException("Unsupported trackId: " + trackId);
+    public void setTrackSelection(String trackId, int trackType) {
+        Log.d("xxx :", "set tracks X1 ..." + trackId);
+
+        final String[] split = trackId.split(":");
+        if (split.length != 3) {
+            System.err.println("xxx : Invalid trackId " + trackId);
+            throw new IllegalStateException("Invalid trackId: " + trackId);
         }
-        //set auto track selection
-        int rendererIndex = Character.getNumericValue(trackId.charAt(0));
-        DefaultTrackSelector.Parameters.Builder builder = trackSelectorParameters.buildUpon();
-        builder.clearOverrides(); /*clearSelectionOverrides(rendererIndex);*/
-        //set non auto track selection
-        if (trackId.length() == 3) {
-            int groupIndex = Character.getNumericValue(trackId.charAt(1));
-            int trackIndex = Character.getNumericValue(trackId.charAt(2));
-            Tracks tracks = exoPlayer.getCurrentTracks();
-            List<Tracks.Group> trackGroups = tracks.getGroups();
+        final int groupIndex = Integer.parseInt(split[1]);
+        final int trackIndex = Integer.parseInt(split[2]);
 
-
-            for (Tracks.Group item : trackGroups) {
-                if (groupIndex == trackGroups.indexOf(item) && item.isTrackSupported(trackIndex) && !item.isTrackSelected(trackIndex)) {
-                    System.err.println("xxx : tracks X1 found ...");
-                    Tracks.Group trackGroup = item;
-                    TrackGroup mediaTrackGroup = trackGroup.getMediaTrackGroup();
-                    exoPlayer.setTrackSelectionParameters(
-                            exoPlayer.getTrackSelectionParameters()
-                                    .buildUpon()
-                                    .setOverrideForType(
-                                            new TrackSelectionOverride(
-                                                    trackGroup.getMediaTrackGroup(),
-                                                    trackIndex))
-                                    .build());
-
-                    //TrackSelectionOverride override = new TrackSelectionOverride(mediaTrackGroup, ImmutableList.of(trackIndex));
-          /*builder.setSelectionOverride(
-          rendererIndex, mappedTrackInfo.getTrackGroups(rendererIndex), override);*/
-                    //builder.addOverride(override);
-                }
+        Tracks tracks = exoPlayer.getCurrentTracks();
+        List<Tracks.Group> trackGroups = tracks.getGroups();
+        final List<Tracks.Group> selectedTypeGroups = new ArrayList<>();
+        for (int i = 0; i < trackGroups.size(); i++) {
+            final Tracks.Group group = trackGroups.get(i);
+            if (group.getType() == trackType) {
+                selectedTypeGroups.add(group);
             }
-
         }
-        //trackSelector.setParameters(builder);
-        //updateTrackSelectorParameters();
+
+
+
+        if (groupIndex < 0 || groupIndex >= selectedTypeGroups.size()) {
+            System.err.println("xxx : Unsupported type " + trackType);
+
+            throw new IllegalStateException("Unsupported type: " + trackType);
+        }
+
+        final Tracks.Group trackGroup = selectedTypeGroups.get(groupIndex);
+
+        if (!trackGroup.isTrackSupported(trackIndex)) {
+            System.err.println("xxx : Unsupported track Index " + trackIndex);
+            throw new IllegalStateException("Unsupported track Index: " + trackIndex);
+        }
+
+//        if(trackGroup.isTrackSelected(trackIndex)){
+//            System.err.println("xxx : track is selected " + trackIndex);
+//            return;
+//        }
+
+        final Format format =  trackGroup.getTrackFormat(0);
+
+        Log.d("xxx :", "Updating track ..."
+                + " trackIndex " + trackIndex + " GroupIndex " + groupIndex
+                + "format " + format
+                + trackId + " Type " + trackType
+        );
+
+
+        exoPlayer.setTrackSelectionParameters(
+                exoPlayer.getTrackSelectionParameters()
+                        .buildUpon()
+                        .setOverrideForType(
+                                new TrackSelectionOverride(
+                                        trackGroup.getMediaTrackGroup(),
+                                       trackIndex))
+                        .build());
     }
 
     @SuppressWarnings("SuspiciousNameCombination")

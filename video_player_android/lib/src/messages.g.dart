@@ -114,13 +114,18 @@ class TrackSelectionsMessage {
   TrackSelectionsMessage(
       {required this.textureId,
       required this.trackId,
-      required this.trackSelections});
+      required this.trackSelections,
+        required this.trackIndex,
+        required this.trackType,
+      });
   int textureId;
   String? trackId;
+  int? trackIndex;
+  int? trackType;
   List<Object?>? trackSelections;
 
   Object encode() {
-    return <Object?>[textureId, trackId, trackSelections];
+    return <Object?>[textureId, trackId, trackSelections, trackIndex, trackType];
   }
 
   static TrackSelectionsMessage decode(Object result) {
@@ -129,6 +134,8 @@ class TrackSelectionsMessage {
       textureId: result[0]! as int,
       trackId: result[1] as String?,
       trackSelections: result[2]! as List<Object?>?,
+      trackIndex: result[3] as int?,
+      trackType: result[4] as int?,
     );
   }
 }
