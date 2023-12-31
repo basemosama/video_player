@@ -370,13 +370,6 @@ final class VideoPlayer {
     }
 
 
-    public int getActiveVideoTrack(){
-
-
-    }
-
-
-
     public ArrayList<Object> getTrackSelections() {
         System.err.println("xxx : tracks X4 ...");
         ArrayList<Object> trackSelections = new ArrayList<>();
@@ -399,9 +392,12 @@ final class VideoPlayer {
                         autoTrackSelection.put("isUnknown", false);
                         autoTrackSelection.put("isAuto", true);
                         autoTrackSelection.put("trackType", trackType);
+                        final boolean isSelected = trackSelectorParameters.getRendererDisabled(rendererIndex);
+                        Log.d("xxx auto", "isSelected" + " " + trackSelectorParameters.overrides);
+
                         autoTrackSelection.put(
                                 "isSelected",
-                                 !trackSelectorParameters.hasSelectionOverride(rendererIndex, trackGroups));
+                                isSelected);
                         autoTrackSelection.put("trackId", Integer.toString(rendererIndex));
                         trackSelections.add(autoTrackSelection);
                     }
@@ -435,15 +431,19 @@ final class VideoPlayer {
                                 trackSelection.put("isUnknown", true);
                         }
 
-           SelectionOverride selectionOverride =
-                trackSelectorParameters.getSelectionOverride(rendererIndex, trackGroups);
+                        TrackSelectionOverride selectionOverride =
+                                trackSelectorParameters.overrides.get(group);
+
                         trackSelection.put("isAuto", false);
                         trackSelection.put("trackType", trackType);
+                        final boolean isSelected = selectionOverride != null && selectionOverride.trackIndices.contains(trackIndex)
+                                && selectionOverride.mediaTrackGroup.getFormat(trackIndex).equals(trackFormat);
+
+                        Log.d("xxx selectionOverride", selectionOverride == null ? "null" : selectionOverride.mediaTrackGroup.toString() + " " + selectionOverride.trackIndices);
+
                         trackSelection.put(
                                 "isSelected",
-                    trackSelectorParameters.overrides != null
-                    && selectionOverride.containsTrack(trackIndex)
-                    && selectionOverride.groupIndex == groupIndex);
+                                isSelected);
                         trackSelection.put("trackId", getTrackId(rendererIndex, groupIndex, trackIndex));
                         trackSelections.add(trackSelection);
                     }
@@ -550,8 +550,6 @@ final class VideoPlayer {
     private String getTrackId(Integer rendererIndex, Integer groupIndex, Integer trackIndex) {
         return rendererIndex.toString() + groupIndex.toString() + trackIndex.toString();
     }
-
-
 
 
     public void setTrackSelection(String trackId) {

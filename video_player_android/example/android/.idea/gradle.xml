@@ -9,7 +9,7 @@
         <option name="gradleJvm" value="jbr-17" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../../../../packages/packages/video_player/video_player_android/android" />
+            <option value="$PROJECT_DIR$/../../android" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/../../../../../../flutter/cache/hosted/pub.dev/path_provider-2.1.1/android" />
