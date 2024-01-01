@@ -220,12 +220,11 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
         fileContents); // For vtt files, use WebVTTCaptionFile
   }
 
-  String subtitle="Subtitle";
+  String subtitle = "Subtitle";
 
   @override
   void initState() {
     super.initState();
-
 
     _controller = VideoPlayerController.networkUrl(
       Uri.parse(
@@ -234,10 +233,9 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
     );
 
     _controller.addListener(() {
-      final text = _controller.value.subtitle;
-      if (text != null) {
-      subtitle = text.toString();
-      }
+      print('video listener :${_controller.value}');
+      final cues = _controller.value.subtitle;
+      subtitle = (cues.isEmpty ? '' : cues.join("/n"));
       setState(() {});
     });
 
@@ -543,14 +541,15 @@ class _TrackSelectionDialog extends StatelessWidget {
                         .map((track) => RadioListTile<TrackSelection>(
                               title: Text(track.trackName),
                               value: track,
-                              groupValue:  videoTrackSelections
-                                  .where((track) => track.isSelected).firstOrNull,
+                              groupValue: videoTrackSelections
+                                  .where((track) => track.isSelected)
+                                  .firstOrNull,
                               selected: track.isSelected,
                               onChanged: (TrackSelection? track) {
                                 if (track == null) {
                                   return;
                                 }
-                                  Navigator.of(context).pop(track);
+                                Navigator.of(context).pop(track);
                               },
                             ))
                         .toList(),
@@ -565,7 +564,8 @@ class _TrackSelectionDialog extends StatelessWidget {
                               title: Text(track.trackName),
                               value: track,
                               groupValue: audioTrackSelections
-                                  .where((track) => track.isSelected).firstOrNull,
+                                  .where((track) => track.isSelected)
+                                  .firstOrNull,
                               selected: track.isSelected,
                               onChanged: (TrackSelection? track) {
                                 if (track == null) {
@@ -588,7 +588,8 @@ class _TrackSelectionDialog extends StatelessWidget {
                               title: Text(track.trackName),
                               value: track,
                               groupValue: textTrackSelections
-                                  .where((track) => track.isSelected).firstOrNull,
+                                  .where((track) => track.isSelected)
+                                  .firstOrNull,
                               selected: track.isSelected,
                               onChanged: (TrackSelection? track) {
                                 if (track == null) {
