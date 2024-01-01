@@ -63,7 +63,7 @@ class VideoPlayerValue {
     this.rotationCorrection = 0,
     this.errorDescription,
     this.isCompleted = false,
-    this.subtitle,
+    this.subtitle = const [],
   });
 
   /// Returns an instance for a video that hasn't been loaded.
@@ -165,7 +165,7 @@ class VideoPlayerValue {
   }
 
 
-  final List<String>? subtitle;
+  final List<String> subtitle;
 
 
   /// Returns a new instance that has the same values as this current instance,
@@ -230,6 +230,7 @@ class VideoPlayerValue {
         'playbackSpeed: $playbackSpeed, '
         'errorDescription: $errorDescription, '
         'isCompleted: $isCompleted, '
+        'subtitle:[${subtitle.join(",")}], '
         'errorDescription: $errorDescription)';
   }
 
@@ -517,8 +518,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           break;
         case VideoEventType.subtitle:
           final subtitle = event.subtitle;
-          final x = value.copyWith(subtitle: subtitle);
-          value = x;
+          value= value.copyWith(subtitle: subtitle);
           break;
         case VideoEventType.unknown:
           break;
