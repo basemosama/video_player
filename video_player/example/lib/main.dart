@@ -198,7 +198,7 @@ class _ButterFlyAssetVideoState extends State<_ButterFlyAssetVideo> {
               ),
             ),
           ),
-          _GetTrackSelectionButton(controller: _controller),
+          // _GetTrackSelectionButton(controller: _controller),
         ],
       ),
     );
@@ -212,6 +212,7 @@ class _BumbleBeeRemoteVideo extends StatefulWidget {
 
 class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
   late VideoPlayerController _controller;
+  bool isInitialized = false;
 
   Future<ClosedCaptionFile> _loadCaptions() async {
     final String fileContents = await DefaultAssetBundle.of(context)
@@ -225,22 +226,27 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
   @override
   void initState() {
     super.initState();
+  }
 
+  Future<void> initPlayer() async {
     _controller = VideoPlayerController.networkUrl(
       Uri.parse(
           'http://sample.vodobox.com/planete_interdite/planete_interdite_alternate.m3u8'),
       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
     );
 
-    _controller.addListener(() {
-      print('video listener :${_controller.value}');
-      final cues = _controller.value.subtitle;
-      subtitle = (cues.isEmpty ? '' : cues.join("/n"));
-      setState(() {});
-    });
+    // _controller.addListener(() {
+    //   print('video listener :${_controller.value}');
+    //   final cues = _controller.value.subtitle;
+    //   subtitle = (cues.isEmpty ? '' : cues.join("/n"));
+    //   setState(() {});
+    // });
 
     _controller.setLooping(true);
-    _controller.initialize();
+    await _controller.initialize();
+    setState(() {
+      isInitialized = true;
+    });
   }
 
   @override
@@ -256,22 +262,23 @@ class _BumbleBeeRemoteVideoState extends State<_BumbleBeeRemoteVideo> {
         children: <Widget>[
           Container(padding: const EdgeInsets.only(top: 20.0)),
           const Text('With remote mp4'),
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: <Widget>[
-                  VideoPlayer(_controller),
-                  ClosedCaption(text: subtitle),
-                  _ControlsOverlay(controller: _controller),
-                  VideoProgressIndicator(_controller, allowScrubbing: true),
-                ],
+          if (isInitialized)
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: <Widget>[
+                    VideoPlayer(_controller),
+                    ClosedCaption(text: subtitle),
+                    _ControlsOverlay(controller: _controller),
+                    VideoProgressIndicator(_controller, allowScrubbing: true),
+                  ],
+                ),
               ),
             ),
-          ),
-          _GetTrackSelectionButton(controller: _controller),
+          // _GetTrackSelectionButton(controller: _controller),
         ],
       ),
     );
@@ -452,161 +459,161 @@ class _PlayerVideoAndPopPageState extends State<_PlayerVideoAndPopPage> {
   }
 }
 
-class _GetTrackSelectionButton extends StatelessWidget {
-  _GetTrackSelectionButton({required this.controller});
-
-  final VideoPlayerController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 20.0),
-      child: MaterialButton(
-          child: Text('Get Track Selection'),
-          onPressed: () async {
-            final tracks = await controller.trackSelections;
-            if (tracks == null) {
-              return;
-            }
-            final selected = await showDialog<TrackSelection>(
-              context: context,
-              builder: (_) => _TrackSelectionDialog(
-                videoTrackSelections: tracks
-                    .where(
-                        (track) => track.trackType == TrackSelectionType.video)
-                    .toList(),
-                audioTrackSelections: tracks
-                    .where(
-                        (track) => track.trackType == TrackSelectionType.audio)
-                    .toList(),
-                textTrackSelections: tracks
-                    .where(
-                        (track) => track.trackType == TrackSelectionType.text)
-                    .toList(),
-              ),
-            );
-            if (selected != null) {
-              await controller.setTrackSelection(selected);
-            }
-          }),
-    );
-  }
-}
-
-class _TrackSelectionDialog extends StatelessWidget {
-  _TrackSelectionDialog({
-    required this.videoTrackSelections,
-    required this.audioTrackSelections,
-    required this.textTrackSelections,
-  });
-
-  final List<TrackSelection> videoTrackSelections;
-  final List<TrackSelection> audioTrackSelections;
-  final List<TrackSelection> textTrackSelections;
-
-  int _tabBarLength() {
-    int length = 0;
-    if (videoTrackSelections.isNotEmpty) length += 1;
-    if (audioTrackSelections.isNotEmpty) length += 1;
-    if (textTrackSelections.isNotEmpty) length += 1;
-    return length;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: 0,
-      length: _tabBarLength(),
-      child: AlertDialog(
-        titlePadding: EdgeInsets.all(0),
-        contentPadding: EdgeInsets.all(0),
-        title: TabBar(
-          labelColor: Colors.black,
-          tabs: [
-            if (videoTrackSelections.isNotEmpty) Tab(text: 'Video'),
-            if (audioTrackSelections.isNotEmpty) Tab(text: 'Audio'),
-            if (textTrackSelections.isNotEmpty) Tab(text: 'Text'),
-          ],
-        ),
-        content: Container(
-          height: 200,
-          width: 200,
-          child: TabBarView(
-            children: [
-              if (videoTrackSelections.isNotEmpty)
-                SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: videoTrackSelections
-                        .map((track) => RadioListTile<TrackSelection>(
-                              title: Text(track.trackName),
-                              value: track,
-                              groupValue: videoTrackSelections
-                                  .where((track) => track.isSelected)
-                                  .firstOrNull,
-                              selected: track.isSelected,
-                              onChanged: (TrackSelection? track) {
-                                if (track == null) {
-                                  return;
-                                }
-                                Navigator.of(context).pop(track);
-                              },
-                            ))
-                        .toList(),
-                  ),
-                ),
-              if (audioTrackSelections.isNotEmpty)
-                SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: audioTrackSelections
-                        .map((track) => RadioListTile<TrackSelection>(
-                              title: Text(track.trackName),
-                              value: track,
-                              groupValue: audioTrackSelections
-                                  .where((track) => track.isSelected)
-                                  .firstOrNull,
-                              selected: track.isSelected,
-                              onChanged: (TrackSelection? track) {
-                                if (track == null) {
-                                  return;
-                                }
-                                if (!track.isSelected) {
-                                  Navigator.of(context).pop(track);
-                                }
-                              },
-                            ))
-                        .toList(),
-                  ),
-                ),
-              if (textTrackSelections.isNotEmpty)
-                SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: textTrackSelections
-                        .map((track) => RadioListTile<TrackSelection>(
-                              title: Text(track.trackName),
-                              value: track,
-                              groupValue: textTrackSelections
-                                  .where((track) => track.isSelected)
-                                  .firstOrNull,
-                              selected: track.isSelected,
-                              onChanged: (TrackSelection? track) {
-                                if (track == null) {
-                                  return;
-                                }
-                                if (!track.isSelected) {
-                                  Navigator.of(context).pop(track);
-                                }
-                              },
-                            ))
-                        .toList(),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+// class _GetTrackSelectionButton extends StatelessWidget {
+//   _GetTrackSelectionButton({required this.controller});
+//
+//   final VideoPlayerController controller;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: EdgeInsets.only(top: 20.0),
+//       child: MaterialButton(
+//           child: Text('Get Track Selection'),
+//           onPressed: () async {
+//             final tracks = await controller.trackSelections;
+//             if (tracks == null) {
+//               return;
+//             }
+//             final selected = await showDialog<TrackSelection>(
+//               context: context,
+//               builder: (_) => _TrackSelectionDialog(
+//                 videoTrackSelections: tracks
+//                     .where(
+//                         (track) => track.trackType == TrackSelectionType.video)
+//                     .toList(),
+//                 audioTrackSelections: tracks
+//                     .where(
+//                         (track) => track.trackType == TrackSelectionType.audio)
+//                     .toList(),
+//                 textTrackSelections: tracks
+//                     .where(
+//                         (track) => track.trackType == TrackSelectionType.text)
+//                     .toList(),
+//               ),
+//             );
+//             if (selected != null) {
+//               await controller.setTrackSelection(selected);
+//             }
+//           }),
+//     );
+//   }
+// }
+//
+// class _TrackSelectionDialog extends StatelessWidget {
+//   _TrackSelectionDialog({
+//     required this.videoTrackSelections,
+//     required this.audioTrackSelections,
+//     required this.textTrackSelections,
+//   });
+//
+//   final List<TrackSelection> videoTrackSelections;
+//   final List<TrackSelection> audioTrackSelections;
+//   final List<TrackSelection> textTrackSelections;
+//
+//   int _tabBarLength() {
+//     int length = 0;
+//     if (videoTrackSelections.isNotEmpty) length += 1;
+//     if (audioTrackSelections.isNotEmpty) length += 1;
+//     if (textTrackSelections.isNotEmpty) length += 1;
+//     return length;
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return DefaultTabController(
+//       initialIndex: 0,
+//       length: _tabBarLength(),
+//       child: AlertDialog(
+//         titlePadding: EdgeInsets.all(0),
+//         contentPadding: EdgeInsets.all(0),
+//         title: TabBar(
+//           labelColor: Colors.black,
+//           tabs: [
+//             if (videoTrackSelections.isNotEmpty) Tab(text: 'Video'),
+//             if (audioTrackSelections.isNotEmpty) Tab(text: 'Audio'),
+//             if (textTrackSelections.isNotEmpty) Tab(text: 'Text'),
+//           ],
+//         ),
+//         content: Container(
+//           height: 200,
+//           width: 200,
+//           child: TabBarView(
+//             children: [
+//               if (videoTrackSelections.isNotEmpty)
+//                 SingleChildScrollView(
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: videoTrackSelections
+//                         .map((track) => RadioListTile<TrackSelection>(
+//                               title: Text(track.trackName),
+//                               value: track,
+//                               groupValue: videoTrackSelections
+//                                   .where((track) => track.isSelected)
+//                                   .firstOrNull,
+//                               selected: track.isSelected,
+//                               onChanged: (TrackSelection? track) {
+//                                 if (track == null) {
+//                                   return;
+//                                 }
+//                                 Navigator.of(context).pop(track);
+//                               },
+//                             ))
+//                         .toList(),
+//                   ),
+//                 ),
+//               if (audioTrackSelections.isNotEmpty)
+//                 SingleChildScrollView(
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: audioTrackSelections
+//                         .map((track) => RadioListTile<TrackSelection>(
+//                               title: Text(track.trackName),
+//                               value: track,
+//                               groupValue: audioTrackSelections
+//                                   .where((track) => track.isSelected)
+//                                   .firstOrNull,
+//                               selected: track.isSelected,
+//                               onChanged: (TrackSelection? track) {
+//                                 if (track == null) {
+//                                   return;
+//                                 }
+//                                 if (!track.isSelected) {
+//                                   Navigator.of(context).pop(track);
+//                                 }
+//                               },
+//                             ))
+//                         .toList(),
+//                   ),
+//                 ),
+//               if (textTrackSelections.isNotEmpty)
+//                 SingleChildScrollView(
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: textTrackSelections
+//                         .map((track) => RadioListTile<TrackSelection>(
+//                               title: Text(track.trackName),
+//                               value: track,
+//                               groupValue: textTrackSelections
+//                                   .where((track) => track.isSelected)
+//                                   .firstOrNull,
+//                               selected: track.isSelected,
+//                               onChanged: (TrackSelection? track) {
+//                                 if (track == null) {
+//                                   return;
+//                                 }
+//                                 if (!track.isSelected) {
+//                                   Navigator.of(context).pop(track);
+//                                 }
+//                               },
+//                             ))
+//                         .toList(),
+//                   ),
+//                 ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

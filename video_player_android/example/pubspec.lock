@@ -489,10 +489,10 @@ packages:
   video_player_platform_interface:
     dependency: "direct main"
     description:
-      path: "packages/video_player/video_player_platform_interface"
+      path: video_player_platform_interface
       ref: HEAD
-      resolved-ref: "264f9dfc70a853b0d6521850baf644f3aa5681e8"
-      url: "https://github.com/basemosama/packages.git"
+      resolved-ref: "38d6c4072e5447c40e3322e0572b8f4e68346542"
+      url: "https://github.com/sourcya/video_player.git"
     source: git
     version: "6.2.1"
   vm_service:

@@ -278,6 +278,7 @@ class MiniController extends ValueNotifier<VideoPlayerValue> {
           break;
         case VideoEventType.unknown:
           break;
+        case VideoEventType.subtitle:
       }
     }
 

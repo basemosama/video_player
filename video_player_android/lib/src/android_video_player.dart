@@ -134,8 +134,8 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
           _intTrackSelectionTypeMap[trackSelectionMap['trackType']]!;
       final bool isUnknown = trackSelectionMap['isUnknown'] as bool;
       final bool isAuto = trackSelectionMap['isAuto'] as bool;
-      final String trackId = trackSelectionMap['trackId']as String;
-      final bool isSelected = trackSelectionMap['isSelected']as bool;
+      final String trackId = trackSelectionMap['trackId'] as String;
+      final bool isSelected = trackSelectionMap['isSelected'] as bool;
 
       if (isUnknown || isAuto) {
         trackSelections.add(TrackSelection(
@@ -150,7 +150,7 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
         switch (trackSelectionType) {
           case TrackSelectionType.video:
             {
-              final int rolesFlag = trackSelectionMap['rolesFlag']as int;
+              final int rolesFlag = trackSelectionMap['rolesFlag'] as int;
               final int bitrate = trackSelectionMap['bitrate'] as int;
               final int width = trackSelectionMap['width'] as int;
               final int height = trackSelectionMap['height'] as int;
@@ -177,10 +177,10 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
           case TrackSelectionType.audio:
             {
               final int rolesFlag = trackSelectionMap['rolesFlag'] as int;
-              final String language = trackSelectionMap['language']as String;
-              final String label = trackSelectionMap['label']as String;
-              final int channelCount = trackSelectionMap['channelCount']as int;
-              final int bitrate = trackSelectionMap['bitrate']as int;
+              final String language = trackSelectionMap['language'] as String;
+              final String label = trackSelectionMap['label'] as String;
+              final int channelCount = trackSelectionMap['channelCount'] as int;
+              final int bitrate = trackSelectionMap['bitrate'] as int;
               final trackSelectionName = _joinWithSeparator([
                 _buildLanguageOrLabelString(
                     language, rolesFlag, label, trackSelectionNameResource),
@@ -232,20 +232,19 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
 
   @override
   Future<void> setTrackSelection(int textureId, TrackSelection trackSelection) {
-    final  type = trackSelection.trackType;
+    final type = trackSelection.trackType;
     final trackIndex = int.tryParse(trackSelection.trackId);
-    int trackType = switch(type){
+    int trackType = switch (type) {
       TrackSelectionType.audio => 1,
       TrackSelectionType.video => 2,
       TrackSelectionType.text => 3,
     };
     return _api.setTrackSelection(TrackSelectionsMessage(
-        trackId: trackSelection.trackId,
-        textureId: textureId,
-        trackSelections: <Object?>[],
-      trackType:trackType,
-      trackIndex:trackIndex,
-
+      trackId: trackSelection.trackId,
+      textureId: textureId,
+      trackSelections: <Object?>[],
+      trackType: trackType,
+      trackIndex: trackIndex,
     ));
   }
 
@@ -285,7 +284,8 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
             isPlaying: map['isPlaying'] as bool,
           );
         case 'subtitle':
-           List<String>? subtitle = (map['cues'] as List?)?.map((e) => e.toString()).toList();
+          List<String>? subtitle =
+              (map['cues'] as List?)?.map((e) => e.toString()).toList();
           return VideoEvent(
             eventType: VideoEventType.subtitle,
             subtitle: subtitle,
@@ -336,6 +336,7 @@ class AndroidVideoPlayer extends VideoPlayerPlatform {
       case 3:
         return TrackSelectionRoleType.closedCaptions;
     }
+    return null;
   }
 
   TrackSelectionChannelType? _toChannelType(int channelCount) {

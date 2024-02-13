@@ -4,8 +4,6 @@
 
 package io.flutter.plugins.videoplayer;
 
-import static com.google.android.exoplayer2.Player.REPEAT_MODE_ALL;
-import static com.google.android.exoplayer2.Player.REPEAT_MODE_OFF;
 
 import android.content.Context;
 import android.net.Uri;
@@ -14,48 +12,48 @@ import android.util.Log;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.annotation.VisibleForTesting;
+import androidx.media3.common.AudioAttributes;
+import androidx.media3.common.C;
+import androidx.media3.common.Format;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.MimeTypes;
+import androidx.media3.common.PlaybackException;
+import androidx.media3.common.PlaybackParameters;
+import androidx.media3.common.Player;
+import androidx.media3.common.TrackGroup;
+import androidx.media3.common.TrackSelectionOverride;
+import androidx.media3.common.Tracks;
+import androidx.media3.common.text.Cue;
+import androidx.media3.common.text.CueGroup;
+import androidx.media3.common.util.Assertions;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.common.util.Util;
+import androidx.media3.datasource.DataSource;
+import androidx.media3.datasource.DefaultDataSource;
+import androidx.media3.datasource.DefaultHttpDataSource;
+import androidx.media3.exoplayer.DefaultRenderersFactory;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.dash.DashMediaSource;
+import androidx.media3.exoplayer.dash.DefaultDashChunkSource;
+import androidx.media3.exoplayer.hls.DefaultHlsExtractorFactory;
+import androidx.media3.exoplayer.hls.HlsExtractorFactory;
+import androidx.media3.exoplayer.hls.HlsMediaSource;
+import androidx.media3.exoplayer.rtsp.RtspMediaSource;
+import androidx.media3.exoplayer.smoothstreaming.DefaultSsChunkSource;
+import androidx.media3.exoplayer.smoothstreaming.SsMediaSource;
+import androidx.media3.exoplayer.source.MediaSource;
+import androidx.media3.exoplayer.source.ProgressiveMediaSource;
+import androidx.media3.exoplayer.source.TrackGroupArray;
+import androidx.media3.exoplayer.trackselection.AdaptiveTrackSelection;
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
+import androidx.media3.exoplayer.trackselection.MappingTrackSelector;
+import androidx.media3.exoplayer.trackselection.TrackSelectionArray;
+import androidx.media3.exoplayer.util.EventLogger;
+import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.PlaybackException;
-import com.google.android.exoplayer2.PlaybackParameters;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.Player.Listener;
-import com.google.android.exoplayer2.Tracks;
-import com.google.android.exoplayer2.audio.AudioAttributes;
-import com.google.android.exoplayer2.extractor.ts.DefaultTsPayloadReaderFactory;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.source.TrackGroup;
-import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.source.dash.DashMediaSource;
-import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
-import com.google.android.exoplayer2.source.hls.DefaultHlsExtractorFactory;
-import com.google.android.exoplayer2.source.hls.HlsExtractorFactory;
-import com.google.android.exoplayer2.source.hls.HlsMediaSource;
-import com.google.android.exoplayer2.source.rtsp.RtspMediaSource;
-import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource;
-import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
-import com.google.android.exoplayer2.text.Cue;
-import com.google.android.exoplayer2.text.CueGroup;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.Parameters;
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-import com.google.android.exoplayer2.trackselection.TrackSelectionOverride;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultDataSource;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
-import com.google.android.exoplayer2.util.Assertions;
-import com.google.android.exoplayer2.util.EventLogger;
-import com.google.android.exoplayer2.util.MimeTypes;
-import com.google.android.exoplayer2.util.Util;
+
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -83,7 +81,7 @@ final class VideoPlayer {
 
     private DefaultTrackSelector trackSelector;
 
-    private Parameters trackSelectorParameters;
+    private DefaultTrackSelector.Parameters trackSelectorParameters;
 
     private final TextureRegistry.SurfaceTextureEntry textureEntry;
 
@@ -100,7 +98,7 @@ final class VideoPlayer {
 
     private DefaultHttpDataSource.Factory httpDataSourceFactory = new DefaultHttpDataSource.Factory();
 
-    VideoPlayer(
+    @OptIn(markerClass = UnstableApi.class) VideoPlayer(
             Context context,
             EventChannel eventChannel,
             TextureRegistry.SurfaceTextureEntry textureEntry,
@@ -163,7 +161,7 @@ final class VideoPlayer {
         setUpVideoPlayer(exoPlayer, eventSink);
     }
 
-    @VisibleForTesting
+    @OptIn(markerClass = UnstableApi.class) @VisibleForTesting
     public void buildHttpDataSourceFactory(@NonNull Map<String, String> httpHeaders) {
         final boolean httpHeadersNotEmpty = !httpHeaders.isEmpty();
         final String userAgent =
@@ -178,7 +176,7 @@ final class VideoPlayer {
         }
     }
 
-    private MediaSource buildMediaSource(
+    @OptIn(markerClass = UnstableApi.class) private MediaSource buildMediaSource(
             Uri uri, DataSource.Factory mediaDataSourceFactory, String formatHint) {
         int type;
         if (formatHint == null) {
@@ -257,7 +255,7 @@ final class VideoPlayer {
         exoPlayer.setVideoSurface(surface);
         setAudioAttributes(exoPlayer, options.mixWithOthers);
         exoPlayer.addListener(
-                new Listener() {
+                new Player.Listener() {
                     private boolean isBuffering = false;
 
                     public void setBuffering(boolean buffering) {
@@ -269,7 +267,7 @@ final class VideoPlayer {
                         }
                     }
 
-                    @Override
+                    @OptIn(markerClass = UnstableApi.class) @Override
                     public void onPlaybackStateChanged(final int playbackState) {
                         if (playbackState == Player.STATE_BUFFERING) {
                             setBuffering(true);
@@ -358,7 +356,7 @@ final class VideoPlayer {
     }
 
     void setLooping(boolean value) {
-        exoPlayer.setRepeatMode(value ? REPEAT_MODE_ALL : REPEAT_MODE_OFF);
+        exoPlayer.setRepeatMode(value ? Player.REPEAT_MODE_ALL : Player.REPEAT_MODE_OFF);
     }
 
     void setVolume(double value) {
@@ -382,20 +380,20 @@ final class VideoPlayer {
         return exoPlayer.getCurrentPosition();
     }
 
-    private void updateTrackSelectorParameters() {
+    @OptIn(markerClass = UnstableApi.class) private void updateTrackSelectorParameters() {
         if (trackSelector != null) {
             trackSelectorParameters = trackSelector.getParameters();
         }
     }
 
 
-    public ArrayList<Object> getTrackSelections() {
+    @UnstableApi public ArrayList<Object> getTrackSelections() {
         System.err.println("xxx : tracks X4 ...");
         ArrayList<Object> trackSelections = new ArrayList<>();
         ArrayList<Integer> autoTrackSelectionTypes = new ArrayList<>();
 
 
-        MappedTrackInfo mappedTrackInfo =
+        MappingTrackSelector.MappedTrackInfo mappedTrackInfo =
                 Assertions.checkNotNull(trackSelector.getCurrentMappedTrackInfo());
         for (int rendererIndex = 0;
              rendererIndex < mappedTrackInfo.getRendererCount();
@@ -499,7 +497,7 @@ final class VideoPlayer {
     }
 
 
-    private Boolean isSupportedTrackForRenderer(
+    @UnstableApi private Boolean isSupportedTrackForRenderer(
             TrackGroupArray trackGroups,
             MappingTrackSelector.MappedTrackInfo mappedTrackInfo,
             Integer rendererIndex) {
@@ -521,7 +519,7 @@ final class VideoPlayer {
         }
     }
 
-    private static Integer inferPrimaryTrackType(Format format) {
+    @OptIn(markerClass = UnstableApi.class) private static Integer inferPrimaryTrackType(Format format) {
         int trackType = MimeTypes.getTrackType(format.sampleMimeType);
         if (trackType != C.TRACK_TYPE_UNKNOWN) {
             return trackType;
@@ -545,7 +543,7 @@ final class VideoPlayer {
         return TextUtils.isEmpty(format.label) ? "" : format.label;
     }
 
-    private String buildLanguageString(Format format) {
+    @UnstableApi private String buildLanguageString(Format format) {
         String language = format.language;
         if (language == null
                 || TextUtils.isEmpty(language)
@@ -580,7 +578,7 @@ final class VideoPlayer {
         return channelCount;
     }
 
-    private Integer trackBitrate(Format format) {
+    @OptIn(markerClass = UnstableApi.class) private Integer trackBitrate(Format format) {
         return format.bitrate;
     }
 
@@ -647,7 +645,7 @@ final class VideoPlayer {
                         .build());
     }
 
-    @SuppressWarnings("SuspiciousNameCombination")
+    @UnstableApi @SuppressWarnings("SuspiciousNameCombination")
     @VisibleForTesting
     void sendInitialized() {
         if (isInitialized) {
