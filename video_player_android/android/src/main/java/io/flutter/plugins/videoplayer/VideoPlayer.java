@@ -119,7 +119,7 @@ final class VideoPlayer {
 
 
         final NextRenderersFactory renderersFactory =new NextRenderersFactory(context);
-        renderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);
+        renderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
         renderersFactory.setEnableDecoderFallback(true);
 
 
