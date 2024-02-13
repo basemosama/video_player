@@ -66,6 +66,7 @@ import java.util.Map;
 
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.view.TextureRegistry;
+import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.NextRenderersFactory;
 
 
 final class VideoPlayer {
@@ -116,8 +117,8 @@ final class VideoPlayer {
         trackSelector = new DefaultTrackSelector(context, trackSelectionFactory);
         trackSelector.setParameters(trackSelectorParameters);
 
-        final DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(context);
 
+        final NextRenderersFactory renderersFactory =new NextRenderersFactory(context);
         renderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);
         renderersFactory.setEnableDecoderFallback(true);
 

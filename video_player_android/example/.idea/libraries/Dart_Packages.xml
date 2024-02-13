@@ -446,7 +446,7 @@
         <entry key="video_player_platform_interface">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../../flutter/cache/git/packages-d21f3b861e32a937a56f60b33e432d6a092f8de6/packages/video_player/video_player_platform_interface/lib" />
+              <option value="$PROJECT_DIR$/../../../../../flutter/cache/git/video_player-38d6c4072e5447c40e3322e0572b8f4e68346542/video_player_platform_interface/lib" />
             </list>
           </value>
         </entry>
@@ -517,7 +517,7 @@
     </properties>
     <CLASSES>
       <root url="file://$PROJECT_DIR$/../lib" />
-      <root url="file://$PROJECT_DIR$/../../../../../flutter/cache/git/packages-d21f3b861e32a937a56f60b33e432d6a092f8de6/packages/video_player/video_player_platform_interface/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../../flutter/cache/git/video_player-38d6c4072e5447c40e3322e0572b8f4e68346542/video_player_platform_interface/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../flutter/cache/hosted/pub.dev/_fe_analyzer_shared-64.0.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../flutter/cache/hosted/pub.dev/analyzer-6.2.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../flutter/cache/hosted/pub.dev/args-2.4.2/lib" />
